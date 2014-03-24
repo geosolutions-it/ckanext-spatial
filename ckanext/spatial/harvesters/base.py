@@ -248,6 +248,35 @@ class SpatialHarvester(HarvesterBase):
         else:
             extras['resource-type'] = ''
 
+        #etj
+        if len(iso_values.get('legal-use-constraints', [])):
+            extras['use-limitation'] = iso_values['legal-use-constraints'][0]
+        
+        date_created = iso_values.get('date-created')
+        if date_created:
+            extras['date-created'] = date_created
+
+        if len(iso_values.get('vertical-extent-min', [])) and len(iso_values.get('vertical-extent-max', [])):
+            crs_title = ''
+            if len(iso_values.get('vertical-extent-crs-title', [])):
+                crs_title = iso_values['vertical-extent-crs-title'][0]
+            vert_ext_min = iso_values['vertical-extent-min'][0]
+            vert_ext_max = iso_values['vertical-extent-max'][0]
+            if vert_ext_min == vert_ext_max:
+                extras['vertical-extent'] = vert_ext_min + ' ' + crs_title
+            else:
+                extras['vertical-extent'] = vert_ext_min + ' / ' + vert_ext_max + ' ' + crs_title
+
+        if len(iso_values.get('temporal-extent-instant', [])):
+            extras['temporal-extent-instant'] = iso_values['temporal-extent-instant'][0]
+
+        for name in ['ngmp-security-classification-code', 'ngmp-security-classification-system']:
+           val = iso_values.get(name)
+           if val:
+              extras[name] = val
+
+        #/etj     
+
         extras['licence'] = iso_values.get('use-constraints', '')
 
         def _extract_first_license_url(licences):
@@ -327,6 +356,8 @@ class SpatialHarvester(HarvesterBase):
 
         resource_locators = iso_values.get('resource-locator', []) +\
             iso_values.get('resource-locator-identification', [])
+
+        log.info('Found {0} resources in guid {1}'.format( len(resource_locators) ,harvest_object.guid))
 
         if len(resource_locators):
             for resource_locator in resource_locators:

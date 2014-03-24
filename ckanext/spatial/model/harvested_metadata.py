@@ -531,6 +531,35 @@ class ISODocument(MappedXmlDocument):
             multiplicity="*",
         ),
         ISOElement(
+            name="legal-use-constraints",
+            search_paths=[
+                "gmd:identificationInfo/gmd:MD_DataIdentification/gmd:resourceConstraints/gmd:MD_LegalConstraints/gmd:useLimitation/gco:CharacterString/text()",
+                "gmd:identificationInfo/srv:SV_ServiceIdentification/gmd:resourceConstraints/gmd:MD_LegalConstraints/gmd:useLimitation/gco:CharacterString/text()",
+            ],
+            multiplicity="*",
+        ),
+        # 2014 03 04: add  
+        #    <gmd:metadataConstraints>
+        #       <gmd:MD_SecurityConstraints>
+        #          <gmd:classification>
+        #             <gmd:MD_ClassificationCode codeListValue="unclassified" codeList="http://eden.ign.fr/xsd/ngmp/20110916/resources/codelist/ngmpCodelists.xml#MD_ClassificationCode">unclassified</gmd:MD_ClassificationCode>
+
+        ISOElement(
+            name="ngmp-security-classification-code",
+            search_paths=[
+               "gmd:metadataConstraints/gmd:MD_SecurityConstraints/gmd:classification/gmd:MD_ClassificationCode[@codeList='http://eden.ign.fr/xsd/ngmp/20110916/resources/codelist/ngmpCodelists.xml#MD_ClassificationCode']/text()",
+            ],
+            multiplicity="0..1",
+        ),
+        ISOElement(
+            name="ngmp-security-classification-system",
+            search_paths=[
+               "gmd:metadataConstraints/gmd:MD_SecurityConstraints[gmd:classification/gmd:MD_ClassificationCode/@codeList='http://eden.ign.fr/xsd/ngmp/20110916/resources/codelist/ngmpCodelists.xml#MD_ClassificationCode']/gmd:classificationSystem/gco:CharacterString/text()",
+            ],
+            multiplicity="0..1",
+        ),
+
+        ISOElement(
             name="spatial-data-service-type",
             search_paths=[
                 "gmd:identificationInfo/srv:SV_ServiceIdentification/srv:serviceType/gco:LocalName/text()",
@@ -618,10 +647,42 @@ class ISODocument(MappedXmlDocument):
             multiplicity="*",
         ),
         ISOElement(
+            name="temporal-extent-instant",
+            search_paths=[
+                "gmd:identificationInfo/gmd:MD_DataIdentification/gmd:extent/gmd:EX_Extent/gmd:temporalElement/gmd:EX_TemporalExtent/gmd:extent/gml:TimeInstant/gml:timePosition/text()",
+                "gmd:identificationInfo/srv:SV_ServiceIdentification/srv:extent/gmd:EX_Extent/gmd:temporalElement/gmd:EX_TemporalExtent/gmd:extent/gml:TimeInstant/gml:timePosition/text()",
+            ],
+            multiplicity="*",
+        ),
+        ISOElement(
             name="vertical-extent",
             search_paths=[
                 "gmd:identificationInfo/gmd:MD_DataIdentification/gmd:extent/gmd:EX_Extent/gmd:verticalElement/gmd:EX_VerticalExtent",
                 "gmd:identificationInfo/srv:SV_ServiceIdentification/srv:extent/gmd:EX_Extent/gmd:verticalElement/gmd:EX_VerticalExtent",
+            ],
+            multiplicity="*",
+        ),
+        ISOElement(
+            name="vertical-extent-min",
+            search_paths=[
+                "gmd:identificationInfo/gmd:MD_DataIdentification/gmd:extent/gmd:EX_Extent/gmd:verticalElement/gmd:EX_VerticalExtent/gmd:minimumValue/gco:Real/text()",
+                "gmd:identificationInfo/srv:SV_ServiceIdentification/srv:extent/gmd:EX_Extent/gmd:verticalElement/gmd:EX_VerticalExtent/gmd:minimumValue/gco:Real/text()",
+            ],
+            multiplicity="*",
+        ),
+        ISOElement(
+            name="vertical-extent-max",
+            search_paths=[
+                "gmd:identificationInfo/gmd:MD_DataIdentification/gmd:extent/gmd:EX_Extent/gmd:verticalElement/gmd:EX_VerticalExtent/gmd:maximumValue/gco:Real/text()",
+                "gmd:identificationInfo/srv:SV_ServiceIdentification/srv:extent/gmd:EX_Extent/gmd:verticalElement/gmd:EX_VerticalExtent/gmd:maximumValue/gco:Real/text()",
+            ],
+            multiplicity="*",
+        ),
+        ISOElement(
+            name="vertical-extent-crs-title",
+            search_paths=[
+                "gmd:identificationInfo/gmd:MD_DataIdentification/gmd:extent/gmd:EX_Extent/gmd:verticalElement/gmd:EX_VerticalExtent/gmd:verticalCRS/@xlink:title",
+                "gmd:identificationInfo/srv:SV_ServiceIdentification/srv:extent/gmd:EX_Extent/gmd:verticalElement/gmd:EX_VerticalExtent/gmd:verticalCRS/@xlink:title",
             ],
             multiplicity="*",
         ),
