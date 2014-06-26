@@ -267,10 +267,14 @@ class SpatialHarvester(HarvesterBase):
             else:
                 extras['vertical-extent'] = vert_ext_min + ' / ' + vert_ext_max + ' ' + crs_title
 
-        if len(iso_values.get('temporal-extent-instant', [])):
-            extras['temporal-extent-instant'] = iso_values['temporal-extent-instant'][0]
-
-        for name in ['ngmp-security-classification-code', 'ngmp-security-classification-system']:
+        if len(iso_values.get('temporal_extent_instant', [])):
+		tempstr = iso_values['temporal_extent_instant'][0]
+		if 'Z' not in tempstr:
+			extras['temporal_extent_instant'] = iso_values['temporal_extent_instant'][0] + 'Z'
+		else:
+			extras['temporal_extent_instant'] = iso_values['temporal_extent_instant'][0]
+			
+		for name in ['ngmp-security-classification-code', 'ngmp-security-classification-system']:
            val = iso_values.get(name)
            if val:
               extras[name] = val
@@ -304,9 +308,13 @@ class SpatialHarvester(HarvesterBase):
                 extras['graphic-preview-type'] = browse_graphic.get('type')
 
 
-        for key in ['temporal-extent-begin', 'temporal-extent-end']:
+        for key in ['temporal_extent_begin', 'temporal_extent_end']:
             if len(iso_values[key]) > 0:
-                extras[key] = iso_values[key][0]
+            	tempstr = iso_values[key][0]
+		if 'Z' not in tempstr:
+			extras[key] = iso_values[key][0] + 'Z'
+		else:
+			extras[key] = iso_values[key][0]
 
         # Save responsible organization roles
         if iso_values['responsible-organisation']:
