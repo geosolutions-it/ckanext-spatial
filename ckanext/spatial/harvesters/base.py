@@ -274,10 +274,10 @@ class SpatialHarvester(HarvesterBase):
 		else:
 			extras['temporal_extent_instant'] = iso_values['temporal_extent_instant'][0]
 			
-		for name in ['ngmp-security-classification-code', 'ngmp-security-classification-system']:
-           val = iso_values.get(name)
-           if val:
-              extras[name] = val
+	for name in ['ngmp-security-classification-code', 'ngmp-security-classification-system']:
+        	val = iso_values.get(name)
+           	if val:
+              		extras[name] = val
 
         #/etj     
 
