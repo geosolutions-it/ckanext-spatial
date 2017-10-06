@@ -24,6 +24,7 @@ from ckan.lib.helpers import json
 from ckan import logic
 from ckan.lib.navl.validators import not_empty
 from ckan.lib.search.index import PackageSearchIndex
+from ckan.lib.munge import munge_tag
 
 from ckanext.harvest.harvesters.base import HarvesterBase
 from ckanext.harvest.model import HarvestObject
@@ -202,18 +203,21 @@ class SpatialHarvester(HarvesterBase):
         :returns: A dataset dictionary (package_dict)
         :rtype: dict
         '''
-
+        
         tags = []
+
         if 'tags' in iso_values:
+            do_clean = self.source_config.get('clean_tags')
             for tag in iso_values['tags']:
-                tag = tag[:50] if len(tag) > 50 else tag
+                if do_clean:
+                    tag = munge_tag(tag)
                 tags.append({'name': tag})
 
         # Add default_tags from config
-        default_tags = self.source_config.get('default_tags',[])
+        default_tags = self.source_config.get('default_tags', [])
         if default_tags:
-           for tag in default_tags:
-              tags.append({'name': tag})
+            for tag in default_tags:
+                tags.append({'name': tag})
 
         package_dict = {
             'title': iso_values['title'],
