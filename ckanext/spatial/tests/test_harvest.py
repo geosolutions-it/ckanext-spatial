@@ -820,7 +820,7 @@ class TestHarvest(HarvestFixtureBase):
         if not user:
             user = call_action('user_create',
                                name='dummy',
-                               password='dummy',
+                               password='dummybummy',
                                email='dummy@dummy.com')
             user_name = user['name']
         else:
@@ -840,7 +840,7 @@ class TestHarvest(HarvestFixtureBase):
         Session.flush()
         Session.revision = rev or repo.new_revision()
 
-
+        
         context = {'user': 'dummy', 'defer_commit': True}
         package_schema = default_create_package_schema()
         context['schema'] = package_schema
@@ -857,6 +857,7 @@ class TestHarvest(HarvestFixtureBase):
               'modified': datetime.now(),
               'publisher_identifier': 'dummy',
               'metadata_created' : datetime.now(),
+              'metadata_modified' : datetime.now(),
               'guid': unicode(uuid4()),
               'identifier': 'dummy'}
         
