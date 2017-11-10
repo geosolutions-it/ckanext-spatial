@@ -11,7 +11,12 @@ from ckan import model
 from ckan.model import Session, Package, Group, User
 from ckan.logic.schema import default_update_package_schema, default_create_package_schema
 from ckan.logic import get_action
-from ckan.tests.helpers import call_action
+
+try:
+    from ckan.new_tests.helpers import call_action
+except ImportError:
+    from ckan.tests.helpers import call_action
+
 from ckanext.harvest.model import (HarvestSource, HarvestJob, HarvestObject)
 from ckanext.spatial.validation import Validators
 from ckanext.spatial.harvesters.gemini import (GeminiDocHarvester,
@@ -813,7 +818,10 @@ class TestHarvest(HarvestFixtureBase):
             'name': 'test-source',
             'url': u'http://127.0.0.1:8999/gemini2.1/dataset1.xml',
             'source_type': u'gemini-single',
-            'owner_org': 'test-org'
+            'owner_org': 'test-org',
+            'metadata_created': datetime.now().strftime('%YYYY-%MM-%DD %HH:%MM:%s'),
+            'metadata_modified': datetime.now().strftime('%YYYY-%MM-%DD %HH:%MM:%s'),
+
         }
 
         user = User.get('dummy')
