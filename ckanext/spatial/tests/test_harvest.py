@@ -61,16 +61,22 @@ class HarvestFixtureBase(SpatialTestBase):
 
         return job
 
-    def _create_source_and_job(self, source_fixture):
+    def _create_source_and_job(self, source_fixture, context_defaults=None):
         context ={'model':model,
                  'session':Session,
                  'user':u'harvest'}
+        if context_defaults:
+            context.update(context_defaults)
 
         if config.get('ckan.harvest.auth.profile') == u'publisher' \
            and not 'publisher_id' in source_fixture:
            source_fixture['publisher_id'] = self.publisher.id
 
         source_dict=get_action('harvest_source_create')(context,source_fixture)
+        if context.get('defer_commit'):
+            rev = getattr(Session, 'revision', None)
+            Session.flush()
+            Session.revision = rev or model.repo.new_revision()
         source = HarvestSource.get(source_dict['id'])
         assert source
 
@@ -846,7 +852,7 @@ class TestHarvest(HarvestFixtureBase):
 
         rev = getattr(Session, 'revision', None)
         Session.flush()
-        Session.revision = rev or repo.new_revision()
+        Session.revision = rev or model.repo.new_revision()
 
         
         context = {'user': 'dummy', 'defer_commit': True}
@@ -873,10 +879,10 @@ class TestHarvest(HarvestFixtureBase):
 
         rev = getattr(Session, 'revision', None)
         Session.flush()
-        Session.revision = rev or repo.new_revision()
+        Session.revision = rev or model.repo.new_revision()
 
         package = Package.get('fakename')
-        source, job = self._create_source_and_job(source_fixture)
+        source, job = self._create_source_and_job(source_fixture, {'defer_commit': True})
         job.package = package
         job.guid = uuid4()
         harvester = SpatialHarvester()
