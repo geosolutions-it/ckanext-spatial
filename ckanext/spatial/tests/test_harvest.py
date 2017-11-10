@@ -887,7 +887,7 @@ class TestHarvest(HarvestFixtureBase):
 
         Session.revision = rev or model.repo.new_revision()
         package = Package.get('fakename')
-        source, job = self._create_source_and_job(source_fixture, {'defer_commit': True})
+        source, job = self._create_source_and_job(source_fixture, {'defer_commit': False})
         job.package = package
         job.guid = uuid4()
         harvester = SpatialHarvester()
