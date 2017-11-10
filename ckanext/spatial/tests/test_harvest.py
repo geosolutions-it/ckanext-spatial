@@ -856,7 +856,7 @@ class TestHarvest(HarvestFixtureBase):
 
         
         context = {'user': 'dummy', 'defer_commit': True}
-        package_schema = default_create_package_schema()
+        package_schema = default_update_package_schema()
         context['schema'] = package_schema
         package_dict = {'frequency': 'manual',
               'publisher_name': 'dummy',
@@ -875,9 +875,14 @@ class TestHarvest(HarvestFixtureBase):
               'guid': unicode(uuid4()),
               'identifier': 'dummy'}
         
-        package_data = call_action('package_create', context=context, **package_dict)
-
         rev = getattr(Session, 'revision', None)
+        p = Package(name='fakename')
+        Session.add(p)
+        Session.flush()
+        Session.revision = rev or model.repo.new_revision()
+        package_dict['id'] = p.id
+        package_data = call_action('package_update', context=context, **package_dict)
+
         Session.flush()
         Session.revision = rev or model.repo.new_revision()
 
